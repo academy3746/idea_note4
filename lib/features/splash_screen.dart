@@ -45,7 +45,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 "아이디어노트",
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: Sizes.size40,
+                  fontSize: Sizes.size36,
                   fontWeight: FontWeight.bold,
                 ),
               ),
