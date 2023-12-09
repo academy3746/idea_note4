@@ -42,11 +42,11 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
               Gaps.v32,
               const Text(
-                "아이디어노트",
+                "IDEA NOTE",
                 style: TextStyle(
-                  color: Colors.black,
+                  color: Colors.blueAccent,
                   fontSize: Sizes.size36,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ],
