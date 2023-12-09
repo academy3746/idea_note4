@@ -19,9 +19,8 @@ class ItemList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      physics: const NeverScrollableScrollPhysics(),
+      physics: const ClampingScrollPhysics(),
       scrollDirection: Axis.vertical,
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       child: Container(
         height: Sizes.size80,
         decoration: ShapeDecoration(
