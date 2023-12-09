@@ -2,14 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:idea_note4/constants/sizes.dart';
+import 'package:idea_note4/data/idea_info.dart';
+import 'package:intl/intl.dart';
 
 class ItemList extends StatelessWidget {
   const ItemList({
     super.key,
     required this.index,
+    required this.lstIdeaInfo,
   });
 
   final int index;
+
+  final List<IdeaInfo> lstIdeaInfo;
 
   @override
   Widget build(BuildContext context) {
@@ -38,9 +43,9 @@ class ItemList extends StatelessWidget {
                 left: Sizes.size12,
                 bottom: Sizes.size16,
               ),
-              child: const Text(
-                "# 해병 수육을 만들어 봐요!",
-                style: TextStyle(
+              child: Text(
+                "# ${lstIdeaInfo[index].title}",
+                style: const TextStyle(
                   color: Colors.black,
                   fontSize: Sizes.size16,
                 ),
@@ -48,15 +53,17 @@ class ItemList extends StatelessWidget {
             ),
 
             /// 아이디어 작성 일자
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Container(
-                margin: const EdgeInsets.only(
-                  right: Sizes.size12,
-                  bottom: Sizes.size8,
-                ),
+            Container(
+              margin: const EdgeInsets.only(
+                right: Sizes.size12,
+                bottom: Sizes.size8,
+              ),
+              child: Align(
+                alignment: Alignment.bottomRight,
                 child: Text(
-                  "2023.12.09 17:00",
+                  DateFormat("yyyy.MM.dd HH:mm").format(
+                      DateTime.fromMillisecondsSinceEpoch(
+                          lstIdeaInfo[index].createDatetime)),
                   style: TextStyle(
                     fontSize: Sizes.size10,
                     color: Colors.grey.shade400,
@@ -74,8 +81,8 @@ class ItemList extends StatelessWidget {
                   bottom: Sizes.size8,
                 ),
                 child: RatingBar.builder(
+                  initialRating: lstIdeaInfo[index].importance.toDouble(),
                   itemCount: 5,
-                  initialRating: 3,
                   minRating: 1,
                   direction: Axis.horizontal,
                   itemSize: Sizes.size16,
