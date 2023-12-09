@@ -62,8 +62,10 @@ class ItemList extends StatelessWidget {
                 alignment: Alignment.bottomRight,
                 child: Text(
                   DateFormat("yyyy.MM.dd HH:mm").format(
-                      DateTime.fromMillisecondsSinceEpoch(
-                          lstIdeaInfo[index].createDatetime)),
+                    DateTime.fromMillisecondsSinceEpoch(
+                      lstIdeaInfo[index].createDatetime,
+                    ),
+                  ),
                   style: TextStyle(
                     fontSize: Sizes.size10,
                     color: Colors.grey.shade400,

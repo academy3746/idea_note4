@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:idea_note4/constants/sizes.dart';
 import 'package:idea_note4/data/db_helper.dart';
 import 'package:idea_note4/data/idea_info.dart';
+import 'package:idea_note4/features/edit_screen.dart';
 import 'package:idea_note4/widgets/item_list.dart';
 
 class MainScreen extends StatefulWidget {
@@ -52,6 +53,10 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {});
   }
 
+  void _pushToEditScreen() {
+    Navigator.pushNamed(context, EditScreen.routeName);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,7 +87,7 @@ class _MainScreenState extends State<MainScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).primaryColor.withOpacity(0.8),
-        onPressed: () {},
+        onPressed: _pushToEditScreen,
         child: Image.asset(
           "assets/images/post.png",
           color: Colors.white,

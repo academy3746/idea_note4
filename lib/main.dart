@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:idea_note4/data/idea_info.dart';
+import 'package:idea_note4/features/edit_screen.dart';
 import 'package:idea_note4/features/main_screen.dart';
 import 'package:idea_note4/features/splash_screen.dart';
 
@@ -23,6 +25,20 @@ class NoteApp extends StatelessWidget {
       routes: {
         SplashScreen.routeName: (context) => const SplashScreen(),
         MainScreen.routeName: (context) => const MainScreen(),
+      },
+      onGenerateRoute: (settings) {
+        if (settings.name == EditScreen.routeName) {
+          /// 1. 새 글 작성 Scenario
+          final IdeaInfo? ideaInfo = settings.arguments as IdeaInfo?;
+
+          return MaterialPageRoute(
+            builder: (context) {
+              return EditScreen(ideaInfo: ideaInfo);
+            },
+          );
+        }
+
+        return null;
       },
     );
   }
