@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:idea_note4/constants/gaps.dart';
 import 'package:idea_note4/constants/sizes.dart';
+import 'package:idea_note4/data/db_helper.dart';
 import 'package:idea_note4/data/idea_info.dart';
+import 'package:idea_note4/widgets/importance_button.dart';
 import 'package:idea_note4/widgets/input_fied.dart';
 
 class EditScreen extends StatefulWidget {
@@ -25,9 +27,37 @@ class _EditScreenState extends State<EditScreen> {
   final TextEditingController _contentController = TextEditingController();
   final TextEditingController _feedbackController = TextEditingController();
 
+  /// Importance State
+  bool isClicked01 = false;
+  bool isClicked02 = false;
+  bool isClicked03 = true;
+  bool isClicked04 = false;
+  bool isClicked05 = false;
+
+  /// Selected Importance Score (Default is 3)
+  int selectedScore = 3;
+
+  /// Import Database Query Helper
+  final dbHelper = DatabaseHelper();
+
   /// Screen Touch Keyboard Unfocus
   void _keyboardUnFocus() {
     FocusScope.of(context).unfocus();
+  }
+
+  /// Initiate Importance Status
+  void _initClickedStatus() {
+    isClicked01 = false;
+    isClicked02 = false;
+    isClicked03 = false;
+    isClicked04 = false;
+    isClicked05 = false;
+  }
+
+  Future<void> _setInsertIdeaInfo(IdeaInfo ideaInfo) async {
+    await dbHelper.initDatabase();
+
+    await dbHelper.insertIdeaInfo(ideaInfo);
   }
 
   @override
@@ -125,6 +155,84 @@ class _EditScreenState extends State<EditScreen> {
                     fontSize: Sizes.size16,
                   ),
                 ),
+                Container(
+                  margin: const EdgeInsets.only(top: Sizes.size10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        child: ImportanceButton(
+                          isClicked: isClicked01,
+                          selectedScore: 1,
+                        ),
+                        onTap: () {
+                          _initClickedStatus();
+
+                          setState(() {
+                            isClicked01 = true;
+                            selectedScore = 1;
+                          });
+                        },
+                      ),
+                      GestureDetector(
+                        child: ImportanceButton(
+                          isClicked: isClicked02,
+                          selectedScore: 2,
+                        ),
+                        onTap: () {
+                          _initClickedStatus();
+
+                          setState(() {
+                            isClicked02 = true;
+                            selectedScore = 2;
+                          });
+                        },
+                      ),
+                      GestureDetector(
+                        child: ImportanceButton(
+                          isClicked: isClicked03,
+                          selectedScore: 3,
+                        ),
+                        onTap: () {
+                          _initClickedStatus();
+
+                          setState(() {
+                            isClicked03 = true;
+                            selectedScore = 3;
+                          });
+                        },
+                      ),
+                      GestureDetector(
+                        child: ImportanceButton(
+                          isClicked: isClicked04,
+                          selectedScore: 4,
+                        ),
+                        onTap: () {
+                          _initClickedStatus();
+
+                          setState(() {
+                            isClicked04 = true;
+                            selectedScore = 4;
+                          });
+                        },
+                      ),
+                      GestureDetector(
+                        child: ImportanceButton(
+                          isClicked: isClicked05,
+                          selectedScore: 5,
+                        ),
+                        onTap: () {
+                          _initClickedStatus();
+
+                          setState(() {
+                            isClicked05 = true;
+                            selectedScore = 5;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
                 Gaps.v20,
 
                 /// 유저 피드백 사항
@@ -143,6 +251,70 @@ class _EditScreenState extends State<EditScreen> {
                   maxLength: 500,
                 ),
                 Gaps.v20,
+
+                /// 아이디어 작성 및 수정 완료
+                GestureDetector(
+                  onTap: () async {
+                    /// 1. 신규 게시글 작성 처리
+                    String titleValue = _titleController.text.toString();
+                    String motiveValue = _motiveController.text.toString();
+                    String contentValue = _contentController.text.toString();
+                    String feedbackValue = _feedbackController.text.toString();
+
+                    /// 2. Validate Form Field
+                    if (titleValue.isEmpty ||
+                        motiveValue.isEmpty ||
+                        contentValue.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("반드시 작성해야 하는 필드입니다."),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                      return;
+                    }
+
+                    /// 3. IdeaInfo CREATE
+                    if (widget.ideaInfo == null) {
+                      var ideaInfo = IdeaInfo(
+                        title: titleValue,
+                        motive: motiveValue,
+                        content: contentValue,
+                        importance: selectedScore,
+                        feedback: feedbackValue.isNotEmpty ? feedbackValue : "",
+                        createDatetime: DateTime.now().millisecondsSinceEpoch,
+                      );
+
+                      await _setInsertIdeaInfo(ideaInfo);
+
+                      if (mounted) {
+                        Navigator.pop(context);
+                      }
+                    }
+                  },
+                  child: Container(
+                    decoration: ShapeDecoration(
+                      color: Theme.of(context).primaryColor,
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          width: 1,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        borderRadius: BorderRadius.circular(Sizes.size10),
+                      ),
+                    ),
+                    height: Sizes.size64,
+                    alignment: Alignment.center,
+                    child: const Text(
+                      "작성완료",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: Sizes.size18,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
