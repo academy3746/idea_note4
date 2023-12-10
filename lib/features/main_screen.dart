@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:idea_note4/constants/sizes.dart';
 import 'package:idea_note4/data/db_helper.dart';
 import 'package:idea_note4/data/idea_info.dart';
+import 'package:idea_note4/features/detail_screen.dart';
 import 'package:idea_note4/features/edit_screen.dart';
 import 'package:idea_note4/widgets/item_list.dart';
 
@@ -27,6 +28,7 @@ class _MainScreenState extends State<MainScreen> {
     //insertDummyData();
   }
 
+  /// 기열찐빠 더미 데이터
   Future<void> insertDummyData() async {
     await dbHelper.initDatabase();
 
@@ -78,9 +80,18 @@ class _MainScreenState extends State<MainScreen> {
         child: ListView.builder(
           itemCount: lstIdeaInfo.length,
           itemBuilder: (context, index) {
-            return ItemList(
-              index: index,
-              lstIdeaInfo: lstIdeaInfo,
+            return GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  DetailScreen.routeName,
+                  arguments: lstIdeaInfo[index],
+                );
+              },
+              child: ItemList(
+                index: index,
+                lstIdeaInfo: lstIdeaInfo,
+              ),
             );
           },
         ),
