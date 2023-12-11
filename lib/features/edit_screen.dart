@@ -40,6 +40,49 @@ class _EditScreenState extends State<EditScreen> {
   /// Import Database Query Helper
   final dbHelper = DatabaseHelper();
 
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.ideaInfo != null) {
+      /// TextField Settings
+      _titleController.text = widget.ideaInfo!.title;
+      _motiveController.text = widget.ideaInfo!.motive;
+      _contentController.text = widget.ideaInfo!.content;
+
+      if (widget.ideaInfo!.feedback.isNotEmpty) {
+        _feedbackController.text = widget.ideaInfo!.feedback;
+      }
+
+      /// Importance Status Settings
+      _initClickedStatus();
+
+      switch (widget.ideaInfo!.importance) {
+        case 1:
+          isClicked01 = true;
+          break;
+
+        case 2:
+          isClicked02 = true;
+          break;
+
+        case 3:
+          isClicked03 = true;
+          break;
+
+        case 4:
+          isClicked04 = true;
+          break;
+
+        case 5:
+          isClicked05 = true;
+          break;
+      }
+
+      selectedScore = widget.ideaInfo!.importance;
+    }
+  }
+
   /// Screen Touch Keyboard Unfocus
   void _keyboardUnFocus() {
     FocusScope.of(context).unfocus();
@@ -77,9 +120,9 @@ class _EditScreenState extends State<EditScreen> {
             size: Sizes.size24,
           ),
         ),
-        title: const Text(
-          "새 아이디어 작성하기",
-          style: TextStyle(
+        title: Text(
+          widget.ideaInfo == null ? "새 아이디어 작성하기" : "기존 아이디어 수정하기",
+          style: const TextStyle(
             color: Colors.black,
             fontSize: Sizes.size16,
           ),
