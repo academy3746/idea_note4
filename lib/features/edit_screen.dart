@@ -103,6 +103,12 @@ class _EditScreenState extends State<EditScreen> {
     await dbHelper.insertIdeaInfo(ideaInfo);
   }
 
+  Future<void> _setUpdateIdeaInfo(IdeaInfo ideaInfo) async {
+    await dbHelper.initDatabase();
+
+    await dbHelper.updateIdeaInfo(ideaInfo);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -330,9 +336,24 @@ class _EditScreenState extends State<EditScreen> {
 
                       await _setInsertIdeaInfo(ideaInfo);
 
-                      if (mounted) {
-                        Navigator.pop(context);
-                      }
+                      if (!mounted) return;
+                      Navigator.pop(context, "create");
+
+                      /// 4. IdeaInfo UPDATE
+                    } else {
+                      var updateIdeaInfo = widget.ideaInfo;
+
+                      updateIdeaInfo?.title = titleValue;
+                      updateIdeaInfo?.motive = motiveValue;
+                      updateIdeaInfo?.content = contentValue;
+                      updateIdeaInfo?.importance = selectedScore;
+                      updateIdeaInfo?.feedback =
+                          feedbackValue.isNotEmpty ? feedbackValue : "";
+
+                      await _setUpdateIdeaInfo(updateIdeaInfo!);
+
+                      if (!mounted) return;
+                      Navigator.pop(context, "update");
                     }
                   },
                   child: Container(
@@ -348,9 +369,9 @@ class _EditScreenState extends State<EditScreen> {
                     ),
                     height: Sizes.size64,
                     alignment: Alignment.center,
-                    child: const Text(
-                      "작성완료",
-                      style: TextStyle(
+                    child: Text(
+                      widget.ideaInfo == null ? "작성완료" : "수정완료",
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: Sizes.size18,
                         fontWeight: FontWeight.w700,

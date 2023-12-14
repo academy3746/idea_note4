@@ -74,7 +74,7 @@ class _DetailScreenState extends State<DetailScreen> {
 
                           if (!mounted) return;
                           Navigator.of(context).pop();
-                          Navigator.pop(context);
+                          Navigator.pop(context, "delete");
                         },
                         child: const Text(
                           "삭제",
@@ -230,12 +230,17 @@ class _DetailScreenState extends State<DetailScreen> {
 
           /// 5. Confirm Button
           GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(
+            onTap: () async {
+              var result = await Navigator.pushNamed(
                 context,
                 EditScreen.routeName,
                 arguments: widget.ideaInfo,
               );
+
+              if (result != null) {
+                if (!mounted) return;
+                Navigator.pop(context, "update");
+              }
             },
             child: Container(
               margin: const EdgeInsets.all(Sizes.size20),

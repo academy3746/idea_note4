@@ -55,10 +55,6 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {});
   }
 
-  void _pushToEditScreen() {
-    Navigator.pushNamed(context, EditScreen.routeName);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,12 +77,34 @@ class _MainScreenState extends State<MainScreen> {
           itemCount: lstIdeaInfo.length,
           itemBuilder: (context, index) {
             return GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(
+              onTap: () async {
+                var result = await Navigator.pushNamed(
                   context,
                   DetailScreen.routeName,
                   arguments: lstIdeaInfo[index],
                 );
+
+                if (result != null) {
+                  String msg = "";
+
+                  /// 1. IdeaInfo UPDATE
+                  if (result == "update") {
+                    msg = "기존 아이디어가 수정되었습니다.";
+
+                    /// 2. IdeaInfo DELETE
+                  } else if (result == "delete") {
+                    msg = "기존 아이디어가 삭제되었습니다.";
+                  }
+
+                  await _getIdeaInfo();
+
+                  if (!mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(msg),
+                    ),
+                  );
+                }
               },
               child: ItemList(
                 index: index,
@@ -98,7 +116,20 @@ class _MainScreenState extends State<MainScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).primaryColor.withOpacity(0.8),
-        onPressed: _pushToEditScreen,
+        onPressed: () async {
+          var result = await Navigator.pushNamed(context, EditScreen.routeName);
+
+          if (result != null) {
+            await _getIdeaInfo();
+
+            if (!mounted) return;
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("새로운 아이디어 작성이 완료되었습니다."),
+              ),
+            );
+          }
+        },
         child: Image.asset(
           "assets/images/post.png",
           color: Colors.white,
